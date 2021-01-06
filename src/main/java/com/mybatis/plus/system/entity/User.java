@@ -16,18 +16,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-//    @TableId(type=IdType.AUTO)
+    @TableId(type=IdType.ASSIGN_ID)
     private Long id;
     private String name;
     private Integer age;
     private String email;
 
-//    @TableField(fill = FieldFill.INSERT)
-//    private LocalDateTime gmtCreate;
-//    @TableField(fill = FieldFill.UPDATE)
-//    private LocalDateTime gmtModified;
-//    @Version //乐观锁Version注解，数据库类型为int，设默认值为配置的值
-//    private Integer version;
-//    @TableLogic //逻辑删除，数据库类型为int，设置默认值为0
-//    private Integer deleted;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime gmtCreate;
+    @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime gmtModified;
+    @Version //乐观锁Version注解，数据库类型为int，设默认值为配置的值
+    private Integer version;
+    @TableLogic //逻辑删除，数据库类型为int，设置默认值为0
+    private Integer deleted;
 }

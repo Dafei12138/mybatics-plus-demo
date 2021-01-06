@@ -1,13 +1,35 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/mybatis_plus_demo?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
-    username: root
-    password: root
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #设置严格模式,默认false不启动. 启动后在未匹配到指定数据源时候会抛出异常,不启动则使用默认数据源.
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/mybatis_plus_demo?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+          username: root
+          password: root
+        slave_1:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/mybatis_plus_demo_1?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+          username: root
+          password: root
+        slave_2:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://localhost:3306/mybatis_plus_demo_2?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+          username: root
+          password: root
 
 mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  type-enums-package: com.baomidou.mybatisplus.samples.enums.enums
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 3.0.8之前版本问题默认将枚举注册为EnumOrdinalTypeHandler,这是错误的方式,默认是 org.apache.ibatis.type.EnumTypeHandler
+    # 如果项目之中实体统一使用IEnum或注解的方式,可配置成 com.baomidou.mybatisplus.extension.handlers.EnumTypeHandler,也可省略上面的type-enums-package配置
+    # 配置type-enums-package只对注解方式的枚举处理能提前加载缓存.
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+
   global-config:
     db-config:
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)

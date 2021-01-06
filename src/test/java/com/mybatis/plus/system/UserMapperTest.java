@@ -175,20 +175,4 @@ class UserMapperTest {
         IPage<Map<String, Object>> page = userMapper.selectMapsPage(new Page<>(2, 5), Wrappers.<User>query().orderByAsc("age"));
         System.out.println(page.getRecords().get(0));
     }
-
-    @Test
-    void testOptimisticLocker(){
-        User user = userMapper.selectById(15);
-        user.setAge(98);
-
-        User user2 = userMapper.selectById(15);
-        user2.setAge(45);
-        int res2 = userMapper.updateById(user2);
-        System.out.println(res2);
-        System.out.println(user2);
-
-        int res = userMapper.updateById(user);
-        System.out.println(res);
-        System.out.println(user);
-    }
 }
