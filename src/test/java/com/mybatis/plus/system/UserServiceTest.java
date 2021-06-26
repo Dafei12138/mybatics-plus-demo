@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.mybatis.plus.system.entity.User;
 import com.mybatis.plus.system.mapper.UserMapper;
 import com.mybatis.plus.system.service.IUserService;
-import com.sun.corba.se.spi.ior.ObjectKey;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

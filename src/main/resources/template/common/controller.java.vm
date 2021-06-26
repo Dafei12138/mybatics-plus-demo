@@ -1,0 +1,98 @@
+package ${package.Controller};
+
+#set($entityPath = ${table.entityPath})
+#set($entityPath = $entityPath.replace('DO',''))
+import com.augurit.agcloud.framework.ui.result.ContentResultForm;
+import com.augurit.agcloud.framework.ui.result.ResultForm;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
+import ${package.Service}.${table.serviceName};
+import ${package.Entity}.${entity};
+import org.springframework.web.servlet.ModelAndView;
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * ${entityPath} controller
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${entityPath}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+#else
+#if(${superControllerClass})
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+public class ${table.controllerName} {
+#end
+    private final static Logger logger = LoggerFactory.getLogger(${table.controllerName}.class);
+    @Autowired
+    private ${table.serviceName} ${entityPath}Service;
+
+    @GetMapping("index.html")
+    public ModelAndView index() {
+        return new ModelAndView("${entityPath}/${entityPath}");
+    }
+
+    /**
+    * 带条件分页查询
+    * @param entity 查询条件
+    * @param pageNum 页数
+    * @param pageSize 每页大小
+    * @return 返回分页结构数据
+    */
+    @RequestMapping("/list.do")
+    public PageInfo<${entity}> listPage(@RequestBody  ${entity} entity,
+                                    @RequestParam(required = false,defaultValue ="1") Integer pageNum,
+                                    @RequestParam(required = false,defaultValue ="10") Integer pageSize) throws Exception {
+        logger.debug("分页查询，过滤条件为、查询关键字为{}", entity);
+        return ${entityPath}Service.listPage(entity,new Page(pageNum,pageSize));
+    }
+
+    /**
+     * 新增/更新一条数据
+     * @param entity $!{table.comment}
+     * @return 返回保存结果
+     * @throws Exception 抛出异常
+     */
+    @PostMapping("/saveOrUpdate${entity}")
+    public ResultForm saveOrUpdate(@RequestBody ${entity} entity) throws Exception{
+        logger.info("保存或更新$!{table.comment},id:{}",entity.getId());
+        ${entityPath}Service.saveOrUpdateOne(entity);
+        return  new ContentResultForm(true);
+    }
+
+    /**
+     * 根据采$!{table.comment} id删除记录
+     * @param id $!{table.comment}id
+     * @return 返魂删除结果
+     * @throws Exception 抛出未知异常
+     */
+    @GetMapping("/del${entity}ById")
+    public ResultForm delete(@RequestParam(required = false) String id) throws Exception {
+        logger.info("删除采$!{table.comment},id:{}",id);
+        ${entityPath}Service.deleteOne(id);
+        return  new ContentResultForm<>(true);
+    }
+}
+#end

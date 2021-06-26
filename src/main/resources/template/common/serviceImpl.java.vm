@@ -1,0 +1,101 @@
+package ${package.ServiceImpl};
+
+    #set($daoName = $!{table.serviceName})
+    #set($daoName = $daoName.replace('Service','Mapper'))
+    #set($daoName = $daoName.replace('I',''))
+
+import ${package.Entity}.${entity};
+import ${package.Service}.${table.serviceName};
+import ${package.Mapper}.${daoName};
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+import com.augurit.agcloud.framework.ui.pager.PageHelper;
+import com.augurit.agcloud.framework.security.SecurityContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.apache.commons.lang3.StringUtils;
+import java.util.Date;
+import java.util.UUID;
+import java.util.List;
+
+/**
+ * <p>
+ * $!{table.comment} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+#if(${kotlin})
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>(), ${table.serviceName} {
+
+}
+#else
+public class ${table.serviceImplName} implements ${table.serviceName}{
+    @Autowired
+    private ${daoName} mapper;
+
+    /**
+    * 带条件分页查询
+    * @param entity 查询条件
+    * @param page 分页
+    * @return 返回分页结构数据
+    */
+    @Override
+    public PageInfo<${entity}> listPage(${entity} entity,Page page){
+        PageHelper.startPage(page);
+        List<${entity}> list = mapper.selectList(entity);
+        return new PageInfo<${entity}>(list);
+    }
+
+    /**
+     * 根据id查询一条详细数据
+     *
+     * @param id $!{table.comment} id
+     * @return ${entity}
+     */
+    @Override
+    public ${entity} selectOneById(String id) {
+        return mapper.selectOneById(id);
+    }
+
+
+    /**
+     * 新增/更新一条数据
+     *
+     * @param model $!{table.comment}
+     */
+    @Override
+    public void saveOrUpdateOne(${entity} model) {
+        if(StringUtils.isBlank(model.getId())){
+            model.setId(UUID.randomUUID().toString());
+            model.setIsDeleted("0");
+            model.setCreater(SecurityContext.getCurrentUser().getUserName());
+            model.setCreateTime(new Date());
+            mapper.insertOne(model);
+        }else{
+            model.setModifier(SecurityContext.getCurrentUser().getUserName());
+            model.setModifyTime(new Date());
+            mapper.updateOne(model);
+        }
+    }
+
+    /**
+     *  删除一条数据
+     *
+     * @param id $!{table.comment} id
+     */
+    @Override
+    public void deleteOne(String id) throws Exception{
+        ${entity} entity =  StringUtils.isBlank(id) ? null : mapper.selectOneById(id);
+        if (entity == null) {
+        throw new Exception("记录不存在");
+        }
+        entity.setIsDeleted("1");
+        entity.setModifyTime(new Date());
+        entity.setModifier(SecurityContext.getCurrentUser().getUserName());
+        mapper.updateOne(entity);
+    }
+}
+#end

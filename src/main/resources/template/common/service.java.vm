@@ -1,0 +1,51 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+
+/**
+ * <p>
+ * $!{table.comment} 服务类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${kotlin})
+interface ${table.serviceName} : ${superServiceClass}<${entity}>
+#else
+public interface ${table.serviceName}{
+
+    /**
+    * 带条件分页查询
+    * @param entity 查询条件
+    * @param page 分页
+    * @return 返回分页结构数据
+    */
+    PageInfo<${entity}> listPage(${entity} entity,Page page);
+
+    /**
+     * 根据id查询一条详细数据
+     *
+     * @param id $!{table.comment} id
+     * @return ${entity}
+     */
+    ${entity} selectOneById(String id);
+
+    /**
+     * 新增/更新一条数据
+     *
+     * @param model $!{table.comment}
+     */
+     void saveOrUpdateOne(${entity} model);
+
+    /**
+     *  删除一条数据
+     *
+     * @param id $!{table.comment} id
+     * @return ${entity}
+     */
+    void deleteOne(String id) throws Exception;
+}
+#end

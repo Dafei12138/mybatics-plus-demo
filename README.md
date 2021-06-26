@@ -10,3 +10,7 @@
  | 功能字段 | UserFieldTest.java | 
  | 分页插件 | UserPageTest.java | 
  | 代码生成 | MysqlGenerator.java |
+ 
+## Mybatis-Plus整合shiro权限控制
+
+## Mybatis-Plus代码生成

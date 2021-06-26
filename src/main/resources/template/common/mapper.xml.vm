@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${package.Mapper}.${table.mapperName}">
+
+#if(${enableCache})
+    <!-- 开启二级缓存 -->
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+#end
+#if(${baseResultMap})
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="${package.Entity}.${entity}">
+    #foreach($field in ${table.fields})
+        <result column="${field.name}" property="${field.propertyName}" />
+    #end
+    </resultMap>
+#end
+#if(${baseColumnList})
+    <!--  通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ${table.fieldNames}
+    </sql>
+#end
+
+    <!-- 根据id查询一条记录 -->
+    <select id="selectOneById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from ${table.name} where id=#{id} and IS_DELETED='0';
+    </select>
+
+    <!-- 插入一条数据 -->
+    <insert id="insertOne" parameterType="${package.Entity}.${entity}">
+        insert into ${table.name}(
+        #foreach($field in ${table.fields})
+            ${field.name},
+        #end
+        )values(
+        #foreach($field in ${table.fields})
+          #{${field.propertyName}},
+        #end
+        )
+    </insert>
+
+    <!-- 带条件查询记录 -->
+    <update id="updateOne" parameterType="${package.Entity}.${entity}">
+        update ${table.name}
+        <set>
+        #foreach($field in ${table.fields})
+        <if test="${field.propertyName} != null">
+            ${field.name} = #{${field.propertyName}},
+        </if>
+        #end
+        </set>
+        where ID=#{id}
+    </update>
+
+    <!-- 根据条件查询记录 -->
+    <select id="selectList" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from ${table.name}
+        <where>
+            #foreach($field in ${table.fields})
+            <if test="${field.propertyName} != null" >
+               and ${field.name} = #{${field.propertyName}}
+            </if>
+            #end
+            AND  IS_DELETED = '0'
+        </where>
+    </select>
+</mapper>

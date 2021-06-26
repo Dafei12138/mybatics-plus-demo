@@ -1,0 +1,52 @@
+package ${package.Mapper};
+
+import ${package.Entity}.${entity};
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import java.util.List;
+/**
+ * <p>
+ * $!{table.comment}  Mapper 接口
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Mapper
+#if(${kotlin})
+interface ${table.mapperName} : ${superMapperClass}<${entity}>
+#else
+public interface ${table.mapperName} {
+
+    /**
+    * 带条件查询
+    * @param entity 查询条件
+    * @return 返回分页结构数据
+    */
+    List<${entity}> selectList(${entity} entity);
+
+    /**
+     * 根据id查询一条详细数据
+     *
+     * @param id $!{table.comment} id
+     * @return ${entity}
+     */
+    ${entity} selectOneById(@Param("id") String id);
+
+    /**
+     * 新增一条数据
+     *
+     * @param model $!{table.comment}
+     * @return ${entity}
+     */
+     void insertOne(${entity} model);
+
+    /**
+     * 更新一条数据
+     *
+     * @param model $!{table.comment}
+     * @return ${entity}
+     */
+    void updateOne(${entity} model);
+}
+#end
